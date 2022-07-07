@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import pandas as pd
+import matplotlib.pyplot as plt
+import geopandas as gpd
+
+def int_map():
+    # Load world map and autism data
+    world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+    filepath = '/Users/alexwilkinson/code/ADWilk19/autism_employment/raw_data/world_autism_prevalence/autism_world_prevalence.csv'
+    df = pd.read_csv(filepath)
+    # Merge world and aut DataFrames
+    merged=pd.merge(world,df,on='iso_a3')
+    # Remove duplicate column
+    merged.drop('name_y', axis=1, inplace=True)
+    # Rename name_x column
+    merged.rename(columns = {'name_x':'name'}, inplace = True)
+    # Plot interactive map
+    return merged.explore(
+        column="est_autism_prevalence_per_10k",
+        legend=True, # show legend
+        k=10, # number of bins
+        vmin = 65,
+        vmax = 115)
